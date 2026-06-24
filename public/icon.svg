@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="wave-grad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#0ea5e9" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <rect width="512" height="512" rx="128" fill="url(#bg-grad)" />
+  
+  <!-- Outer glowing rings -->
+  <circle cx="256" cy="256" r="160" fill="none" stroke="#ffffff" stroke-opacity="0.03" stroke-width="8" />
+  <circle cx="256" cy="256" r="120" fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="4" />
+  
+  <!-- Responsive Wave Lines -->
+  <g filter="url(#glow)">
+    <rect x="136" y="216" width="16" height="80" rx="8" fill="url(#wave-grad)" />
+    <rect x="168" y="176" width="16" height="160" rx="8" fill="url(#wave-grad)" />
+    <rect x="200" y="136" width="16" height="240" rx="8" fill="url(#wave-grad)" />
+    <rect x="232" y="96" width="16" height="320" rx="8" fill="url(#wave-grad)" />
+    <rect x="264" y="156" width="16" height="200" rx="8" fill="url(#wave-grad)" />
+    <rect x="296" y="116" width="16" height="280" rx="8" fill="url(#wave-grad)" />
+    <rect x="328" y="196" width="16" height="120" rx="8" fill="url(#wave-grad)" />
+    <rect x="360" y="226" width="16" height="60" rx="8" fill="url(#wave-grad)" />
+  </g>
+  
+  <!-- Video Camera Overlay Play Icon in center -->
+  <circle cx="256" cy="256" r="48" fill="#ffffff" filter="drop-shadow(0px 4px 8px rgba(0,0,0,0.3))" />
+  <polygon points="246,236 274,256 246,276" fill="#0ea5e9" />
+</svg>

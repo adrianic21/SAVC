@@ -1,0 +1,6 @@
+{
+  "name": "Simple Audio Video Converter",
+  "description": "Una aplicación web ligera y moderna optimizada como PWA para convertir archivos de audio en videos con ondas de sonido reactivas, imágenes de fondo y texto personalizado.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

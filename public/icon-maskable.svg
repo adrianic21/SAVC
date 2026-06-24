@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-grad-mask" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="wave-grad-mask" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+    <filter id="glow-mask" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <rect width="512" height="512" fill="url(#bg-grad-mask)" />
+  
+  <!-- Wave Lines scaled down slightly to fit the maskable safe zone (inner 80%) -->
+  <g filter="url(#glow-mask)" transform="translate(25.6, 25.6) scale(0.9)">
+    <rect x="136" y="216" width="16" height="80" rx="8" fill="url(#wave-grad-mask)" />
+    <rect x="168" y="176" width="16" height="160" rx="8" fill="url(#wave-grad-mask)" />
+    <rect x="200" y="136" width="16" height="240" rx="8" fill="url(#wave-grad-mask)" />
+    <rect x="232" y="96" width="16" height="320" rx="8" fill="url(#wave-grad-mask)" />
+    <rect x="264" y="156" width="16" height="200" rx="8" fill="url(#wave-grad-mask)" />
+    <rect x="296" y="116" width="16" height="280" rx="8" fill="url(#wave-grad-mask)" />
+    <rect x="328" y="196" width="16" height="120" rx="8" fill="url(#wave-grad-mask)" />
+    <rect x="360" y="226" width="16" height="60" rx="8" fill="url(#wave-grad-mask)" />
+  </g>
+  
+  <circle cx="256" cy="256" r="38" fill="#ffffff" filter="drop-shadow(0px 3px 6px rgba(0,0,0,0.3))" />
+  <polygon points="248,240 270,256 248,272" fill="#0ea5e9" />
+</svg>

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Simple Audio Video Converter (PWA)</title>
+    <meta name="description" content="Genera videos impactantes con ondas reactivas, logos y fondo personalizado directamente desde tu navegador de forma 100% local." />
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#38bdf8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Simple Converter" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+  </head>
+  <body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-sky-500/35 overflow-x-hidden antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Safe Error Interceptor and Register Service Worker -->
+    <script>
+      // Traditional window.onerror override is required by browsers to silence 'Script error.' and cross-origin noise completely
+      window.onerror = function (message, url, line, col, error) {
+        const msg = (message || "").toString().toLowerCase();
+        if (
+          msg.includes('script error') || 
+          msg.includes('firebase') || 
+          msg.includes('googleauth') || 
+          msg.includes('securityerror') || 
+          msg.includes('security') || 
+          msg.includes('indexeddb') || 
+          msg.includes('serviceworker') || 
+          msg.includes('extension') || 
+          msg.includes('cross-origin') || 
+          msg.includes('cross origin') ||
+          msg.includes('anonymous')
+        ) {
+          console.warn('[Suppressed Background Error via onerror]:', message);
+          return true; // Stop browser's default error/uncaught exception handlers
+        }
+        return false;
+      };
+
+      // Gracefully capture and suppress unhandled cross-origin noise or iframe security errors
+      window.addEventListener('error', (event) => {
+        const msg = (event.message || '').toLowerCase();
+        if (
+          msg.includes('script error') || 
+          msg.includes('firebase') || 
+          msg.includes('googleauth') || 
+          msg.includes('securityerror') || 
+          msg.includes('security') || 
+          msg.includes('indexeddb') || 
+          msg.includes('serviceworker') || 
+          msg.includes('extension') || 
+          msg.includes('cross-origin') || 
+          msg.includes('cross origin') ||
+          msg.includes('anonymous')
+        ) {
+          console.warn('[Suppressed Background Error]:', event.message || event);
+          event.preventDefault();
+          event.stopPropagation();
+          return true;
+        }
+      }, true);
+
+      window.addEventListener('unhandledrejection', (event) => {
+        const reasonStr = event.reason?.message || String(event.reason || '');
+        const msg = reasonStr.toLowerCase();
+        if (
+          msg.includes('script error') || 
+          msg.includes('firebase') || 
+          msg.includes('googleauth') || 
+          msg.includes('securityerror') || 
+          msg.includes('security') || 
+          msg.includes('indexeddb') || 
+          msg.includes('serviceworker') || 
+          msg.includes('extension') || 
+          msg.includes('cross-origin') || 
+          msg.includes('cross origin') ||
+          msg.includes('anonymous')
+        ) {
+          console.warn('[Suppressed Background Rejection]:', reasonStr);
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      }, true);
+
+      try {
+        if ('serviceWorker' in navigator) {
+          // Unregister service worker in development and sandbox environments to prevent caching HMR scripts
+          const hostname = window.location.hostname;
+          const isDevelopment = hostname === 'localhost' || hostname.includes('127.0.0.1') || hostname.includes('run.app') || window.location.port !== '';
+          
+          if (isDevelopment) {
+            navigator.serviceWorker.getRegistrations().then((registrations) => {
+              for (let registration of registrations) {
+                registration.unregister().then((success) => {
+                  if (success) console.log('[PWA] Unregistered service worker to avoid dev script conflicts');
+                });
+              }
+            }).catch(e => console.warn('[PWA] Failed to get SW registrations:', e));
+
+            if ('caches' in window) {
+              caches.keys().then((names) => {
+                for (let name of names) {
+                  caches.delete(name).then(() => {
+                    console.log('[PWA] Cleared stale cache:', name);
+                  });
+                }
+              }).catch(e => console.warn('[PWA] Failed to clear caches:', e));
+            }
+          } else {
+            window.addEventListener('load', () => {
+              navigator.serviceWorker.register('/sw.js')
+                .then((reg) => {
+                  console.log('[PWA] Service Worker registrado con éxito:', reg.scope);
+                })
+                .catch((err) => {
+                  console.error('[PWA] Error al registrar el Service Worker:', err);
+                });
+            });
+          }
+        }
+      } catch (e) {
+        console.warn('[PWA] Service Worker / Cache operation bypassed due to environment restrictions:', e);
+      }
+
+      // Capture install prompt for custom in-app button
+      try {
+        window.deferredInstallPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+          // Prevent default browser banner
+          e.preventDefault();
+          // Save event so we can trigger it later
+          window.deferredInstallPrompt = e;
+          // Dispatch custom event to notify React app
+          window.dispatchEvent(new CustomEvent('pwa-installable', { detail: e }));
+        });
+        window.addEventListener('appinstalled', () => {
+          console.log('[PWA] App instalada con éxito');
+          window.deferredInstallPrompt = null;
+          window.dispatchEvent(new CustomEvent('pwa-installed'));
+        });
+      } catch (e) {
+        console.warn('[PWA] Install prompt registers bypassed:', e);
+      }
+    </script>
+  </body>
+</html>
+
